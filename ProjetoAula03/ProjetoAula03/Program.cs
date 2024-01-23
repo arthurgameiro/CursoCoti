@@ -1,2 +1,6 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿using ProjetoAula03.Controllers;
+
+var profissionalController = new ProfissionalController();
+profissionalController.CadastrarProfissional();
+
+Console.ReadKey();
