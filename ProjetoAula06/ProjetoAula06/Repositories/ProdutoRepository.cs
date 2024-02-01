@@ -4,6 +4,7 @@ using ProjetoAula06.Interfaces;
 using ProjetoAula06.Settings;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -34,22 +35,66 @@ namespace ProjetoAula06.Repositories
 
         public void Alterar(Produto obj)
         {
-            throw new NotImplementedException();
+            using (var connection = new SqlConnection(AppSettings.ConnectionString))
+            {
+                connection.Execute(
+                @"
+                    UPDATE PRODUTO 
+                    SET NOME=@NOME, PRECO=@PRECO, QUANTIDADE=@QUANTIDADE       
+                    WHERE ID=@ID
+                ", new
+                {
+                    @ID = obj.Id,
+                    @NOME = obj.Nome,
+                    @PRECO = obj.Preco,
+                    @QUANTIDADE = obj.Quantidade,
+                    @CATEGORIA_ID = obj.Categoria?.Id
+                });
+            }
         }
 
         public void Excluir(Produto obj)
         {
-            throw new NotImplementedException();
+            using (var connection = new SqlConnection(AppSettings.ConnectionString))
+            {
+                connection.Execute(
+                @"
+                    DELETE FROM PRODUTO
+                    WHERE ID=@ID
+                ", new
+                {
+                    @ID = obj.Id
+                });
+            }
         }
 
         public List<Produto> ObterTodos()
         {
-            throw new NotImplementedException();
+            using (var connection = new SqlConnection(AppSettings.ConnectionString))
+            {
+                return connection.Query<Produto>(
+                @"
+                    SELECT ID, NOME, PRECO, QUANTIDADE, CATEGORIA_ID
+                    FROM PRODUTO
+                    ORDER BY NOME
+                ").ToList();
+            }
         }
 
         public Produto? ObterPorId(Guid id)
         {
-            throw new NotImplementedException();
+            using (var connection = new SqlConnection(AppSettings.ConnectionString))
+            {
+                return connection.Query<Produto>(
+                @"
+                    SELECT ID, NOME, PRECO, QUANTIDADE, CATEGORIA_ID
+                    FROM PRODUTO
+                    WHERE ID=@ID
+                ", new
+                {
+                    @ID = id
+                }).FirstOrDefault();
+            }
         }
     }
 }
